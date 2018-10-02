@@ -75,8 +75,8 @@ Foreign key (IDTrabajo) references Trabajo (ID)
 create table Telefono
 (
 	IDTutor int not null,
-	Lada smallint,
-	Numero varchar() not null,
+	Lada smallint not null,
+	Numero int not null
 )
 
 alter table Telefono
