@@ -1,15 +1,13 @@
 create database Comedor
-
+GO
+use Comedor
 GO
 
-use Comedor
-
-use cacas
 create table Persona
 (
 	ID int identity (1,1) not null,
 	Nombre varchar(20) not null,
-	[Apellido Paterno] varchar(20) null,
+	[Apellidos] varchar(20) not null,
 )
 
 alter table Persona
@@ -20,19 +18,28 @@ create table Trabajo
 (
 	ID int identity (1,1) not null,
 	Nombre varchar(20) not null,
-	Descripcion varchar (30)
 )
 
 alter table Trabajo
 add constraint PK_Trabajo
 Primary key (ID)
 
+create table Nivel
+(
+	ID tinyint identity not null,
+	Nombre varchar(30) not null
+)
+
+alter table Nivel
+add constraint PK_NivelID
+Primary key (ID)
+
 create table Niño
 (
 	IDPersona int not null,
 	Fecha_Nacimiento date not null,
-	Nivel tinyint,
-	Grado tinyint
+	Nivel_ID tinyint not null,
+	Grado tinyint not null
 )
 
 alter table Niño 
@@ -42,6 +49,10 @@ Primary key (IDPersona)
 alter table Niño
 add constraint FK_Persona
 Foreign key (IDPersona) references Persona (ID)
+
+alter table Niño
+add constraint FK_Nivel
+Foreign key (Nivel_ID) references Nivel (ID)
 
 create table Tutor
 (
@@ -65,7 +76,7 @@ create table Telefono
 (
 	IDTutor int not null,
 	Lada smallint,
-	Numero float not null,
+	Numero varchar() not null,
 )
 
 alter table Telefono
