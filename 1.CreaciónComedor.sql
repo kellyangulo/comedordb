@@ -11,8 +11,7 @@ create table Persona
 )
 
 alter table Persona
-add constraint PK_Persona
-Primary key (ID)
+add constraint PK_Persona Primary key (ID)
 
 create table Trabajo
 (
@@ -20,9 +19,11 @@ create table Trabajo
 	Nombre varchar(20) not null,
 )
 
-alter table Trabajo
-add constraint PK_Trabajo
-Primary key (ID)
+alter table Trabajo 
+add constraint PK_Trabajo Primary key (ID)
+
+alter table Trabajo 
+add constraint UQ_NombreTrabajo unique (Nombre)
 
 create table Nivel
 (
@@ -31,8 +32,92 @@ create table Nivel
 )
 
 alter table Nivel
-add constraint PK_NivelID
-Primary key (ID)
+add constraint PK_Nivel Primary key (ID)
+
+alter table Nivel
+add constraint UQ_NombreNivel unique (Nombre)
+
+create table Menu
+(
+	ID int identity (1,1) not null,
+	Fecha date,
+	Costo decimal (3,2) not null
+)
+
+alter table Menu
+add constraint PK_Menu Primary key (ID)
+
+alter table  Menu
+add constraint CK_FechaMenu check (Fecha <= getdate())
+
+
+create table Alergia
+(
+	ID int identity (1,1) not null,
+	Descripcion varchar (80) not null
+)
+
+alter table Alergia
+add constraint PK_Alergia Primary key (ID)
+
+alter table Alergia
+add constraint UQ_AlergiaDescripcion unique (Descripcion)
+
+create table TipoComida
+(
+	ID tinyint identity (1,1) not null,
+	Nombre varchar (20) not null
+)
+
+alter table TipoComida
+add constraint PK_TipoComida Primary key (ID)
+
+alter table TipoComida
+add constraint UQ_Nombre_TipoComida unique (Nombre)
+
+create table Inventario
+(
+	ID int identity (1,1) not null,
+	Fecha date
+)
+
+alter table Inventario
+add constraint PK_Inventario Primary key (ID)
+
+alter table  Inventario
+add constraint CK_FechaInventario check (Fecha <= getdate())
+
+create table Ingrediente
+(
+	ID int identity (1,1) not null,
+	Nombre varchar (20) not null,
+	[Fecha Caducidad] date not null,
+	Cantidad int
+)
+
+alter table Ingrediente
+add constraint PK_Ingrediente Primary key (ID)
+
+alter table  Ingrediente
+add constraint CK_FechaCaducidadIngrediente check ([Fecha Caducidad] <= getdate())
+
+alter table Ingrediente
+add constraint UQ_Ingrediente unique (Nombre,[Fecha Caducidad])
+
+
+create table Unidad(
+	ID tinyint identity (1,1) not null,
+	Nombre varchar (20) not null
+)
+
+alter table Unidad
+add constraint PK_Unidad Primary key (ID)
+
+alter table Unidad
+add constraint UQ_UnidadNombre unique (Nombre)
+
+
+----------------------CREACIÓN DE TABLAS DEPENDIENTES--------------------------
 
 create table Niño
 (
@@ -43,16 +128,17 @@ create table Niño
 )
 
 alter table Niño 
-add constraint PK_NiñoPersona
-Primary key (IDPersona)
+add constraint PK_NiñoPersona Primary key (IDPersona)
+
+alter table Niño 
+add constraint FK_Persona Foreign key (IDPersona) references Persona (ID)
 
 alter table Niño
-add constraint FK_Persona
-Foreign key (IDPersona) references Persona (ID)
+add constraint FK_Nivel Foreign key (Nivel_ID) references Nivel (ID)
 
 alter table Niño
-add constraint FK_Nivel
-Foreign key (Nivel_ID) references Nivel (ID)
+add constraint CK_FechaNacimiento check (Fecha_Nacimiento < getdate())
+
 
 create table Tutor
 (
@@ -61,16 +147,14 @@ create table Tutor
 )
 
 alter table Tutor
-add constraint PK_TutorPersona
-Primary key (IDPersona)
+add constraint FK_PersonaID Foreign key (IDPersona) references Persona (ID)
 
 alter table Tutor
-add constraint FK_PersonaID
-Foreign key (IDPersona) references Persona (ID)
+add constraint PK_TutorPersona Primary key (IDPersona)
 
 alter table Tutor
-add constraint FK_Trabajo
-Foreign key (IDTrabajo) references Trabajo (ID)
+add constraint FK_Trabajo Foreign key (IDTrabajo) references Trabajo (ID)
+
 
 create table Telefono
 (
@@ -80,8 +164,10 @@ create table Telefono
 )
 
 alter table Telefono
-add constraint FK_Telefono
-Foreign key (IDTutor) references Tutor (IDPersona)
+add constraint FK_Telefono Foreign key (IDTutor) references Tutor (IDPersona)
+
+alter table Telefono
+add constraint UQ_Telefono unique (Lada,Numero)
 
 create table Tutor_Niño
 (
@@ -90,22 +176,14 @@ create table Tutor_Niño
 )
 
 alter table Tutor_Niño
-add constraint FK_NiñoID
-Foreign key (IDTutor) references Tutor (IDPersona)
+add constraint FK_NiñoID Foreign key (IDTutor) references Tutor (IDPersona)
 
 alter table Tutor_Niño
-add constraint FK_TutorID
-Foreign key (IDNiño) references Niño (IDPersona)
+add constraint FK_TutorID Foreign key (IDNiño) references Niño (IDPersona)
 
-create table Alergia
-(
-	ID int identity (1,1) not null,
-	Descripcion varchar (80) not null
-)
+alter table Tutor_Niño
+add constraint UQ_Tutor_Niño unique (IDTutor,IDNiño)
 
-alter table Alergia
-add constraint PK_Alergia
-Primary key (ID)
 
 create table Niño_Alergia
 (
@@ -114,66 +192,32 @@ create table Niño_Alergia
 )
 
 alter table Niño_Alergia
-add constraint FK_IDNiño
-Foreign key (IDNiño) references Niño (IDPersona)
-
+add constraint UQ_Niño_Alergia unique (IDNiño,IDAlergia)
 
 alter table Niño_Alergia
-add constraint FK_AlergiaID
-Foreign key (IDAlergia) references Alergia (ID)
+add constraint FK_IDNiño Foreign key (IDNiño) references Niño (IDPersona)
+
+alter table Niño_Alergia
+add constraint FK_AlergiaID Foreign key (IDAlergia) references Alergia (ID)
 
 create table Dieta
 (
 	ID int identity (1,1) not null,
-	Costo money not null
+	Costo decimal (3,2) not null,
+	Niño_ID int not null
 )
 
 alter table Dieta
-add constraint PK_Dieta
-Primary key (ID)
+add constraint PK_Dieta Primary key (ID)
 
-create table Niño_Dieta
-(
-	IDNiño int not null,
-	[ID Dieta] int not null
-)
-
-alter table Niño_Dieta
-add constraint FK_IDNiñoDiet
-Foreign key (IDNiño) references Niño (IDPersona)
-
-alter table Niño_Dieta
-add constraint FK_DietaID
-Foreign key ([ID Dieta]) references Dieta (ID)
-
-create table Menu
-(
-	ID int identity (1,1) not null,
-	Fecha date,
-	Costo smallint not null
-)
-
-alter table Menu
-add constraint PK_Menu
-Primary key (ID)
-
-create table Niño_Menu
-(
-	IDNiño int not null,
-	IDMenu int not null
-)
-
-alter table Niño_Menu
-add constraint FK_IDNiñoMenu
-Foreign key (IDNiño) references Niño (IDPersona)
-
-alter table Niño_Menu
-add constraint FK_MenuID
-Foreign key (IDMenu) references Menu (ID)
+alter table  Dieta
+add constraint FK_NiñoID_Dieta Foreign key (Niño_ID) references Niño (IDPersona)
 
 create table Alimento
 (
 	ID int identity (1,1) not null,
+	Nombre varchar (50) not null,
+	TipoComida_ID tinyint not null,
 	Grasas decimal (2,2) not null,
 	Calorias decimal (2,2) not null,
 	Carbohidratos decimal (2,2) not null,
@@ -181,53 +225,21 @@ create table Alimento
 )
 
 alter table Alimento
-add constraint PK_Alimento
-Primary key (ID)
+add constraint PK_Alimento Primary key (ID)
 
-create table Comida
+alter table Alimento
+add constraint FK_TipoComidaID Foreign key (TipoComida_ID) references TipoComida (ID)
+
+create table PorcionIngredienteAlimento
 (
-	IDAlimento int not null,
-	Nombre varchar not null,
-	Descripcion varchar
+	Alimento_ID int not null,
+	Ingrediente_ID int not null,
+	Unidad_ID tinyint not null,
+	Cantidad tinyint not null
 )
 
-alter table Comida
-add constraint FK_IDAlimentoC
-Foreign key (IDAlimento) references Alimento (ID)
-
-alter table Comida
-add constraint PK_Comida
-Primary key (IDAlimento)
-
-create table Bebida
-(
-	IDAlimento int not null,
-	Nombre varchar not null,
-	Descripcion varchar
-)
-
-alter table Bebida
-add constraint FK_IDAlimentoB
-Foreign key (IDAlimento) references Alimento (ID)
-
-alter table Bebida
-add constraint PK_Bebida
-Primary key (IDAlimento)
-
-create table Postre
-(
-	IDAlimento int not null,
-	Nombre varchar not null,
-	Descripcion varchar
-)
-
-alter table Postre
-add constraint  FK_IDAlimentoP
-Foreign key (IDAlimento) references Alimento (ID)
-
-alter table Postre
-add constraint PK_Postre
-Primary key (IDAlimento)
+alter table PorcionIngredienteAlimento
+add constraint UQ_Porcion unique (Alimento_ID,Ingrediente_ID,Unidad_ID,Cantidad)
 
 create table Menu_Alimento
 (
@@ -236,72 +248,56 @@ create table Menu_Alimento
 )
 
 alter table Menu_Alimento
-add constraint FK_IDMenu_Alimento
-Foreign key (IDMenu) references Menu (ID)
+add constraint FK_IDMenu_Alimento Foreign key (IDMenu) references Menu (ID)
 
 alter table Menu_Alimento
-add constraint FK_AlimentoID
-Foreign key (IDAlimento) references Alimento (ID)
-
-create table Cantidad
-(
-	ID int identity (1,1) not null,
-	Descripcion varchar (25) not null
-)
-alter table Cantidad
-add constraint PK_Cantidad
-Primary key (ID)
-
-create table Ingrediente
-(
-	ID int identity (1,1) not null,
-	Nombre varchar (20) not null,
-	IDCantidad int not null,
-	[Fecha Caducidad] date not null
-)
-
-alter table Ingrediente
-add constraint FK_Cantidad
-Foreign key (IDCantidad) references Cantidad (ID)
-
-alter table Ingrediente
-add constraint PK_Ingrediente
-Primary key (ID)
-
-create table Alimento_Ingrediente
-(
-	IDAlimento int not null,
-	IDIngrediente int not null
-)
-
-alter table Alimento_Ingrediente
-add constraint FK_IDAlimento__AlimentoIngrediente
-Foreign key (IDAlimento) references Alimento (ID)
-
-alter table Alimento_Ingrediente
-add constraint FK_IDIngrediente_AlimentoIngrediente
-Foreign key (IDIngrediente) references Ingrediente (ID)
-
-create table Inventario
-(
-	ID int identity (1,1) not null,
-	Fecha date
-)
-
-alter table Inventario
-add constraint PK_Inventario
-Primary key (ID)
+add constraint FK_AlimentoID Foreign key (IDAlimento) references Alimento (ID)
 
 create table Ingrediente_Inventario
 (
+	IDInventario int not null,
 	IDIngrediente int not null,
-	IDInventario int not null
+	CantidadIngrediente int not null,
 )
 
 alter table Ingrediente_Inventario
-add constraint FK_Ingrediente
-Foreign key (IDIngrediente) references Ingrediente (ID)
+add constraint FK_Ingrediente Foreign key (IDIngrediente) references Ingrediente (ID)
 
 alter table Ingrediente_Inventario
-add constraint FK_Inventario
-Foreign key (IDInventario) references Inventario (ID)
+add constraint FK_Inventario Foreign key (IDInventario) references Inventario (ID)
+
+alter table Ingrediente_Inventario
+add constraint UQ_Ingrediente_Inventario unique (IDInventario,IDIngrediente)
+
+create table Dieta_Alimento
+(
+	[ID Dieta] int not null,
+	Alimento_ID int not null,
+)
+
+alter table Dieta_Alimento
+add constraint FK_Dieta_DietaAlimento Foreign key ([ID Dieta]) references Dieta (ID)
+
+alter table Dieta_Alimento
+add constraint FK_Alimento_DietaAlimento Foreign key (Alimento_ID) references Alimento (ID)
+
+create table Niño_Menu
+(
+	ID int identity (1,1) not null,
+	IDNiño int not null,
+	IDMenu int not null
+)
+alter table Niño_Menu
+add constraint PK_MenuID Primary key (ID)
+
+alter table Niño_Menu
+add constraint FK_IDNiñoMenu
+Foreign key (IDNiño) references Niño (IDPersona)
+
+alter table Niño_Menu
+add constraint FK_MenuID Foreign key (IDMenu) references Menu (ID)
+
+-----PAGOS
+
+
+
