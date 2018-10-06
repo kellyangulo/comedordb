@@ -288,13 +288,13 @@ create table Pago
 	NiñoID int not null,
 )
 alter table Pago 
-add constraint PK_TipoPago Foreign key (TipoPagoID) references TipoPago (ID)
+add constraint FK_TipoPago Foreign key (TipoPagoID) references TipoPago (ID)
 
 alter table Pago 
-add constraint PK_PagoNiño Foreign key (NiñoID) references Niño (IDPersona)
+add constraint FK_PagoNiño Foreign key (NiñoID) references Niño (IDPersona)
 
 alter table Pago 
-add constraint PK_PagoTutor Foreign key (TutorID) references Tutor (IDPersona)
+add constraint FK_PagoTutor Foreign key (TutorID) references Tutor (IDPersona)
 
 
 
