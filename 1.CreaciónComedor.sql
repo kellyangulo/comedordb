@@ -37,11 +37,11 @@ add constraint PK_Nivel Primary key (ID)
 alter table Nivel
 add constraint UQ_NombreNivel unique (Nombre)
 
-create table Menu
+create table Menu                                            -----FALTA
 (
 	ID int identity (1,1) not null,
 	Fecha date,
-	Costo decimal (3,2) not null
+	Costo decimal (5,2) not null
 )
 
 alter table Menu
@@ -75,7 +75,7 @@ add constraint PK_TipoComida Primary key (ID)
 alter table TipoComida
 add constraint UQ_Nombre_TipoComida unique (Nombre)
 
-create table Inventario
+create table Inventario 
 (
 	ID int identity (1,1) not null,
 	Fecha date
@@ -87,7 +87,7 @@ add constraint PK_Inventario Primary key (ID)
 alter table  Inventario
 add constraint CK_FechaInventario check (Fecha <= getdate())
 
-create table Ingrediente
+create table Ingrediente                                             -----FALTA
 (
 	ID int identity (1,1) not null,
 	Nombre varchar (20) not null,
@@ -146,6 +146,12 @@ add constraint FK_Nivel Foreign key (Nivel_ID) references Nivel (ID)
 
 alter table Niño
 add constraint CK_FechaNacimiento check (Fecha_Nacimiento < getdate())
+
+alter table Niño
+add constraint CK_GradoMenor check (Grado >= 1 )
+
+alter table Niño
+add constraint CK_GradoMayor check (Grado <= 7) 
 
 
 create table Tutor
@@ -209,15 +215,15 @@ alter table Niño_Alergia
 add constraint FK_AlergiaID Foreign key (IDAlergia) references Alergia (ID)
 
 
-create table Alimento
+create table Alimento                                         -----FALTA
 (
 	ID int identity (1,1) not null,
 	Nombre varchar (50) not null,
 	TipoComida_ID tinyint not null,
-	Grasas decimal (2,2) not null,
-	Calorias decimal (2,2) not null,
-	Carbohidratos decimal (2,2) not null,
-	Proteinas decimal (2,2) not null
+	Grasas decimal (4,2) not null,
+	Calorias decimal (4,2) not null,
+	Carbohidratos decimal (4,2) not null,
+	Proteinas decimal (4,2) not null
 )
 
 alter table Alimento
@@ -226,7 +232,7 @@ add constraint PK_Alimento Primary key (ID)
 alter table Alimento
 add constraint FK_TipoComidaID Foreign key (TipoComida_ID) references TipoComida (ID)
 
-create table PorcionIngredienteAlimento
+create table PorcionIngredienteAlimento                                          -----FALTA
 (
 	Alimento_ID int not null,
 	Ingrediente_ID int not null,
@@ -237,7 +243,7 @@ create table PorcionIngredienteAlimento
 alter table PorcionIngredienteAlimento
 add constraint UQ_Porcion unique (Alimento_ID,Ingrediente_ID,Unidad_ID,Cantidad)
 
-create table Menu_Alimento
+create table Menu_Alimento                                         -----------------------FALTA
 (
 	IDMenu int not null,
 	IDAlimento int not null
@@ -249,7 +255,7 @@ add constraint FK_IDMenu_Alimento Foreign key (IDMenu) references Menu (ID)
 alter table Menu_Alimento
 add constraint FK_AlimentoID Foreign key (IDAlimento) references Alimento (ID)
 
-create table Ingrediente_Inventario
+create table Ingrediente_Inventario                                          -----FALTA
 (
 	IDInventario int not null,
 	IDIngrediente int not null,
@@ -266,7 +272,7 @@ alter table Ingrediente_Inventario
 add constraint UQ_Ingrediente_Inventario unique (IDInventario,IDIngrediente)
 
 
-create table Niño_Alimento
+create table Niño_Alimento                                           -----FALTA
 (
 	IDNiño int not null,
 	IDAlimento int not null,
@@ -279,11 +285,12 @@ add constraint FK_IDNiñoAlimento Foreign key (IDNiño) references Niño (IDPersona
 alter table Niño_Alimento
 add constraint FK_AlimentoNiño Foreign key (IDAlimento) references Alimento (ID)
 
-create table Pago
+create table Pago                                          -----FALTA
 (
 	ID int identity (1,1) not null,
 	TipoPagoID tinyint not null,
-	Monto decimal (4,2) not null,
+	Fecha date not null,
+	Monto decimal (6,2) not null,
 	TutorID int not null,
 	NiñoID int not null,
 )
@@ -296,6 +303,8 @@ add constraint FK_PagoNiño Foreign key (NiñoID) references Niño (IDPersona)
 alter table Pago 
 add constraint FK_PagoTutor Foreign key (TutorID) references Tutor (IDPersona)
 
+alter table Pago 
+add constraint CK_FechaPago check (Fecha <= getdate())
 
 
 
