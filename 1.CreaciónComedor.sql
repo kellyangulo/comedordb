@@ -37,7 +37,7 @@ add constraint PK_Nivel Primary key (ID)
 alter table Nivel
 add constraint UQ_NombreNivel unique (Nombre)
 
-create table Menu                                            -----FALTA
+create table Menu                                    
 (
 	ID int identity (1,1) not null,
 	Fecha date,
@@ -87,12 +87,11 @@ add constraint PK_Inventario Primary key (ID)
 alter table  Inventario
 add constraint CK_FechaInventario check (Fecha <= getdate())
 
-create table Ingrediente                                             -----FALTA
+create table Ingrediente                                     
 (
 	ID int identity (1,1) not null,
-	Nombre varchar (20) not null,
+	Nombre varchar (40) not null,
 	[Fecha Caducidad] date not null,
-	Cantidad int
 )
 
 alter table Ingrediente
@@ -215,7 +214,7 @@ alter table Niño_Alergia
 add constraint FK_AlergiaID Foreign key (IDAlergia) references Alergia (ID)
 
 
-create table Alimento                                         -----FALTA
+create table Alimento                                      
 (
 	ID int identity (1,1) not null,
 	Nombre varchar (50) not null,
