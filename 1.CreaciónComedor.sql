@@ -251,18 +251,22 @@ add constraint FK_IDMenu_Alimento Foreign key (IDMenu) references Menu (ID)
 alter table Menu_Alimento
 add constraint FK_AlimentoID Foreign key (IDAlimento) references Alimento (ID)
 
-create table Ingrediente_Inventario                                          -----FALTA
+create table Ingrediente_Inventario                                
 (
 	IDInventario int not null,
 	IDIngrediente int not null,
 	CantidadIngrediente int not null,
+	Unidad tinyint
 )
 
 alter table Ingrediente_Inventario
-add constraint FK_Ingrediente Foreign key (IDIngrediente) references Ingrediente (ID)
+add constraint FK_IngredienteInventario Foreign key (IDIngrediente) references Ingrediente (ID)
 
 alter table Ingrediente_Inventario
 add constraint FK_Inventario Foreign key (IDInventario) references Inventario (ID)
+
+alter table Ingrediente_Inventario
+add constraint FK_UnidadInventario Foreign key (Unidad) references Unidad (ID)
 
 alter table Ingrediente_Inventario
 add constraint UQ_Ingrediente_Inventario unique (IDInventario,IDIngrediente)
