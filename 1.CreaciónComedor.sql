@@ -97,9 +97,6 @@ create table Ingrediente
 alter table Ingrediente
 add constraint PK_Ingrediente Primary key (ID)
 
-alter table  Ingrediente
-add constraint CK_FechaCaducidadIngrediente check ([Fecha Caducidad] <= getdate())
-
 alter table Ingrediente
 add constraint UQ_Ingrediente unique (Nombre,[Fecha Caducidad])
 
@@ -231,18 +228,18 @@ add constraint PK_Alimento Primary key (ID)
 alter table Alimento
 add constraint FK_TipoComidaID Foreign key (TipoComida_ID) references TipoComida (ID)
 
-create table PorcionIngredienteAlimento                                          -----FALTA
+create table PorcionIngredienteAlimento        
 (
 	Alimento_ID int not null,
 	Ingrediente_ID int not null,
 	Unidad_ID tinyint not null,
-	Cantidad tinyint not null
+	Cantidad decimal(6,2) not null
 )
 
 alter table PorcionIngredienteAlimento
 add constraint UQ_Porcion unique (Alimento_ID,Ingrediente_ID,Unidad_ID,Cantidad)
 
-create table Menu_Alimento                                         -----------------------FALTA
+create table Menu_Alimento                                      
 (
 	IDMenu int not null,
 	IDAlimento int not null
