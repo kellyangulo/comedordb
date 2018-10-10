@@ -285,20 +285,19 @@ add constraint FK_IDNiñoAlimento Foreign key (IDNiño) references Niño (IDPersona
 alter table Niño_Alimento
 add constraint FK_AlimentoNiño Foreign key (IDAlimento) references Alimento (ID)
 
-create table Pago                                          -----FALTA
+create table Pago                                       
 (
 	ID int identity (1,1) not null,
 	TipoPagoID tinyint not null,
 	Fecha date not null,
-	Monto decimal (6,2) not null,
+	Cantidad decimal (6,2) not null,
 	TutorID int not null,
-	NiñoID int not null,
 )
 alter table Pago 
-add constraint FK_TipoPago Foreign key (TipoPagoID) references TipoPago (ID)
+add constraint PK_Pago Primary key (ID) 
 
 alter table Pago 
-add constraint FK_PagoNiño Foreign key (NiñoID) references Niño (IDPersona)
+add constraint FK_TipoPago Foreign key (TipoPagoID) references TipoPago (ID)
 
 alter table Pago 
 add constraint FK_PagoTutor Foreign key (TutorID) references Tutor (IDPersona)
@@ -306,6 +305,19 @@ add constraint FK_PagoTutor Foreign key (TutorID) references Tutor (IDPersona)
 alter table Pago 
 add constraint CK_FechaPago check (Fecha <= getdate())
 
+create table DetallePago                                       
+(
+	PagoID int not null,
+	NiñoID int not null,
+	MenuID int not null,
+)
 
+alter table DetallePago
+add constraint FK_Menu_DetallePago Foreign key (MenuID) references Menu (ID)
 
+alter table DetallePago
+add constraint FK_Niño_DetallePago Foreign key (NiñoID) references Niño (IDPersona)
+
+alter table DetallePago
+add constraint FK_Pago_DetallePago Foreign key (PagoID) references Pago (ID)
 
