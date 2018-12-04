@@ -1,2 +1,1 @@
-# comedordb
-Proyecto de taller de base de datos
+Este proyecto está inactivo repo correcto: JoelReyesRivera/BASE-DE-DATOS
